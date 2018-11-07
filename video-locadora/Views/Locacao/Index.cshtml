@@ -155,6 +155,11 @@
 
                     $(this).parents("tr").remove(); // Remove localmente a linha do filme de onde o botão foi pressionado
                 });
+
+                // Forçar checked = false para #SelectAll quando fecha o modal
+                $('#locacaoModalCenter').on('hidden.bs.modal', function () {
+                    $('#SelectAll').prop('checked', false);
+                })
             }
         });
     });

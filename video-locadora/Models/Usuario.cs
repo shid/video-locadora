@@ -17,10 +17,12 @@ namespace video_locadora.Models
 
         [Required(ErrorMessage = "Complete esse campo")]
         [StringLength(50)]
+        [Remote("VerificaEmail", "Usuario", HttpMethod = "POST", ErrorMessage = "Email já cadastrado")] // Verificação personalizada por script com retorno de mensagem personalizado
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Complete esse campo")]
         [StringLength(14)]
+        [Remote("VerificaCPF", "Usuario", HttpMethod = "POST", ErrorMessage = "CPF já cadastrado")] // Verificação personalizada por script com retorno de mensagem personalizado
         public string CPF { get; set; }
 
         [Required(ErrorMessage = "Complete esse campo")]
