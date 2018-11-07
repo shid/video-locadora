@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Video Locadora</title>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+
+    @if (Session["Credencial_Nome"] != null)
+    {
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            @Html.ActionLink("Video Locadora", "Index", "Painel", null, new { @class = "navbar-brand" })
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Genero
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @Html.ActionLink("Listar", "Index", "Genero", null, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Adicionar", "Adicionar", "Genero", null, new { @class = "dropdown-item" })
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Filme
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @Html.ActionLink("Listar", "Index", "Filme", null, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Adicionar", "Adicionar", "Filme", null, new { @class = "dropdown-item" })
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Locação
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @Html.ActionLink("Listar", "Index", "Locacao", null, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Adicionar", "Adicionar", "Locacao", null, new { @class = "dropdown-item" })
+                        </div>
+                    </li>
+                </ul>
+                <div class="nav-item dropdown navbar-text">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @Session["Credencial_Nome"]
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right text-right" aria-labelledby="navbarDropdown">
+                        @Html.ActionLink("Alterar Senha", "Editar", "Usuario", null, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        @Html.ActionLink("Logout", "Logout", "Acesso", null, new { @class = "dropdown-item" })
+                    </div>
+                </div>
+            </div>
+        </nav>
+    }
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    @if (Session["Alert-Status"] != null)
+    {
+        <style>
+            .alert {
+                position: fixed;
+                right: 25px;
+                bottom: 10px;
+                opacity: .9;
+            }
+        </style>
+
+        <div class="alert alert-@Session["Alert-Style"] alert-dismissible" style="opacity: 0;">
+            <button type="button" class="close" data-dismiss="alert" id="btn-close-alert">&times;</button>
+            <strong>@Session["Alert-Strong"]</strong> @Session["Alert-Message"]
+        </div>
+
+        <script>
+            // Destroi a sessão de alerta ao clicar em fechar
+            $("#btn-close-alert").on("click", function () {
+                $.ajax({
+                    url: '/Alert/Destroy/',
+                    type: 'POST',
+                    data: { 'destroy-alert-session': true } // Envia informação para destruir as sessões de alerta
+                });
+            });
+
+            
+            $("div.alert").fadeTo(400, .9); // Tempo para aparecer o alert
+            
+            window.setTimeout(function () {
+                $("div.alert").fadeTo(400, 0).slideUp(400, function () { // Tempo para ocultar o alerta
+                    $("div.alert").addClass('hidden'); // Oculta o alerta
+                    $("#btn-close-alert").trigger('click'); // Clica automaticamente no botão fechar para destruir as sessões de alerta
+                });
+            }, 4000); // Aguarda 4 segundos para que seja ocultado o alerta
+            
+        </script>
+    }
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

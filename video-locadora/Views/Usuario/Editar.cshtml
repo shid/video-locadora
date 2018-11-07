@@ -1,0 +1,23 @@
+﻿@model video_locadora.Models.Usuario
+@{
+    ViewBag.Title = "Perfil";
+}
+
+@using (Html.BeginForm("Atualizar", "Usuario", FormMethod.Post, new { @class = "form-signin" }))
+{
+    <h1 class="h3 mb-3">Alterar Senha</h1>
+
+    <div class="form-group">
+        @Html.PasswordFor(u => u.Senha, new { @class = "form-control", placeholder = "Senha", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.Senha, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <button class="btn btn-sm btn-secondary btn-block" onclick="location.href='@Url.Action("Index" , "Painel")'; return false;">Cancelar</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-sm btn-primary btn-block" type="submit">Salvar</button>
+        </div>
+    </div>
+}

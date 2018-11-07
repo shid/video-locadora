@@ -1,0 +1,163 @@
+﻿@model video_locadora.Models.MultList
+
+@{
+    ViewBag.Title = "Locacao";
+}
+
+<div class="lista lista-locacao">
+    <h1 class="h3 mb-3">Lista de Locações</h1>
+        <table class="table table-striped">
+            <tr>
+                <th class="text-center">
+                    @Html.DisplayName("Id")
+                </th>
+                <th>
+                    @Html.DisplayName("Cliente")
+                </th>
+                <th>
+                    @Html.DisplayName("CPF")
+                </th>
+                <th class="text-center">
+                    @Html.DisplayName("Total")
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var locacao in Model.LocacaoUsuarios)
+            {
+                 <tr>
+                     <td class="text-center">
+                         @Html.DisplayFor(model => locacao.Usuario_Id)
+                     </td>
+                     <td>
+                         @Html.DisplayFor(model => locacao.Usuario_Nome)
+                     </td>
+                     <td>
+                         @Html.DisplayFor(model => locacao.Usuario_CPF)
+                     </td>
+                     <td class="text-center">
+                         @Html.DisplayFor(model => locacao.Total_Locado)
+                     </td>
+                     <td>
+                         <button type="button" class="btn btn-sm btn-block btn-primary" data-toggle="modal" data-target="#locacaoModalCenter" id="filme-lista">
+                             Lista de Filmes
+                         </button>
+                     </td>
+                 </tr>
+            }
+
+        </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="locacaoModalCenter" tabindex="-1" role="dialog" aria-labelledby="locacaoModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="locacaoModalLongTitle">Editar locacao</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("Retornar", "Locacao", FormMethod.Post, new { id = "form-filmes" }))
+            {
+                <table class="table table-striped" id="locacao-lista">
+                    <tr class="text-center">
+                        <th class="text-center">
+                            @Html.CheckBox("SelectAll", new { id = "SelectAll" })
+                        </th>
+                        <th class="text-center">
+                            @Html.DisplayName("Id")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Filme")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Data Locação")
+                        </th>
+                        <th>
+                            <button class="btn btn-sm btn-block btn-danger" id="filme-retornar-selecionado" type="submit" disabled>Devolução</button>
+                        </th>
+                    </tr>
+                </table>
+            }
+            </div>
+    </div>
+</div>
+
+<script>
+
+    var id_usuario, filme_qtde, target_locacao;
+
+    $('button#filme-lista').on('click', function (e) {
+        e.preventDefault();
+
+        target_locacao = $(event.target).closest("tr"); // Pega a linha de onde foi pressionado o botão
+
+        id_usuario = target_locacao.find("td:eq(0)").html().trim(); // Pega o valor da coluna 0 de onde foi pressionado o botão
+
+        filme_qtde = target_locacao.find("td:eq(3)").html().trim(); // Pega o valor da coluna 3 de onde foi pressionado o botão
+
+        $('table#locacao-lista tr').not(':nth-child(1)').remove() // Remove todas as linhas da table com exeção da primeira
+
+        $.ajax({
+            url: '/Locacao/Lista/' + id_usuario, // Envia o valor para pegar os dados de todos os filmes locados para um usuário específico por ID
+            type: 'GET', // Metodo utilizado para envio dos parâmetros
+            dataType: 'json', // Formato da mensagem
+            success: function (data) {
+                $.each(data, function (i, item) { // Passa por todos os itens retorado pela URL armazenados em item
+                    // Cria uma nova linha com os dados das colunas de acordo com os valores da variavel item
+                    $('<tr>').html(
+                        "<td class='text-center'> \
+                            <input type = 'checkbox' id = 'filme-" + item.Id + "' class= 'filme' name = 'checkbox' value = '" + item.Id + "' > \
+                         </td> \
+                         <td class='text-center'>" +
+                            item.Id +
+                        "</td>\
+                         <td>" + item.Filme_Nome + "</td>\
+                         <td>" + item.Data_Locacao + "</td>\
+                         <td>\
+                            <button type='button' class='btn btn-sm btn-block btn-primary' id='filme-retornar'>Devolução</button>\
+                         </td>"
+                    ).appendTo('#locacao-lista'); // Aplica a linha para a tabela com o ID locacao-lista
+                });
+
+                // Ativa/Desativa, ao clicar no checkbox, a seleção de todos os checkbox
+                $("#SelectAll").click(function () {
+                    $("input:checkbox.filme").not(this).prop("checked", this.checked);
+                });
+
+                // A cada click em algum checkbox, verifica se tem mais de um selecionado, caso tenha habilita o botão para apagar
+                $("input:checkbox.filme, #SelectAll").change(function () {
+                    if ($("input:checkbox:checked.filme").length > 0) {
+                        $('#filme-retornar-selecionado').prop('disabled', false)
+                    } else {
+                        $('#filme-retornar-selecionado').prop('disabled', true)
+                    }
+                });
+
+                // Ação para retornar 1 ou mais filmes
+                $('button#filme-retornar').on('click', function (e) {
+                    e.preventDefault();
+
+                    id_locacao = $(event.target).closest("tr").find("td:eq(1)").html().trim(); // Pega o valor da coluna 1 de onde foi pressionado o botão
+
+                    target_locacao.find("td:eq(3)").html(--filme_qtde); // Subtrai 1 localmente do valor total de filmes listados por usuário
+
+                    $.ajax({
+                        url: '/Locacao/Retornar/', // Envia o ID do filme locado para ser retorando
+                        type: 'POST',
+                        data: { "checkbox": id_locacao }
+                    });
+
+                    if (filme_qtde < 1) {
+                        location.reload(); // Caso o total de filmes locados seja < que 1, a página é recarregada para não listar mais o usuário da lista com 0 filmes locados
+                    }
+
+                    $(this).parents("tr").remove(); // Remove localmente a linha do filme de onde o botão foi pressionado
+                });
+            }
+        });
+    });
+
+
+</script>

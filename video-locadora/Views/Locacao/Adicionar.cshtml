@@ -1,0 +1,33 @@
+﻿@model video_locadora.Models.MultList
+@{
+    ViewBag.Title = "Adicionar";
+}
+
+@using (Html.BeginForm("Salvar", "Locacao", FormMethod.Post, new { @class = "form-signin" }))
+{
+    <h1 class="h3 mb-3">Adicionar Locação</h1>
+
+    <div class="form-group">
+        @Html.DropDownListFor(l => l.Usuario.Id, new SelectList(Model.Usuarios, "Id", "Nome"), "Selecione o Usuário", new { id = "Usuario_Id", @class = "form-control", required = "required", name = "Id" })
+        @Html.ValidationMessageFor(l => l.Usuario.Id, "", new { @class = "validation-error" })
+    </div>
+    <div class="form-group">
+        @Html.DropDownListFor(l => l.Filme.Id, new SelectList(Model.Filmes, "Id", "Nome"), "Selecione o Filme", new { id = "Filme_Id", @class = "form-control", required = "required", name = "Id" })
+        @Html.ValidationMessageFor(l => l.Filme.Id, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <button class="btn btn-sm btn-secondary btn-block" onclick="location.href='@Url.Action("Index" , "Locacao")'; return false;">Cancelar</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-sm btn-primary btn-block" type="submit">Salvar</button>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#Usuario_Id").val(@Session["Ultimo_Usuario_Locacao"]);
+    });
+</script>

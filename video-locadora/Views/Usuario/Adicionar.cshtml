@@ -1,0 +1,46 @@
+﻿@model video_locadora.Models.Usuario
+@{
+    /**/
+
+    ViewBag.Title = "Adicionar";
+}
+
+@using (Html.BeginForm("Salvar", "Usuario", FormMethod.Post, new { @class = "form-signin" }))
+{
+    <h1 class="h3 mb-3">Criar Usuário</h1>
+
+    <div class="form-group">
+        @Html.TextBoxFor(u => u.Nome, new { @class = "form-control", placeholder = "Nome", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.Nome, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-group">
+        @Html.TextBoxFor(u => u.Email, new { @class = "form-control", placeholder = "Email", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.Email, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-group">
+        @Html.TextBoxFor(u => u.CPF, new { @class = "form-control", placeholder = "CPF", id = "CPF", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.CPF, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-group">
+        @Html.PasswordFor(u => u.Senha, new { @class = "form-control", placeholder = "Senha", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.Senha, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <button class="btn btn-sm btn-secondary btn-block" onclick="location.href='@Url.Action("Index" , "Acesso")'; return false;">Cancelar</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-sm btn-primary btn-block" type="submit">Salvar</button>
+        </div>
+    </div>
+}
+
+<script>
+    $("#CPF").keydown(function () {
+        $("#CPF").mask("999.999.999-99");
+    });
+</script>

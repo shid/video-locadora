@@ -1,0 +1,28 @@
+﻿@model video_locadora.Models.Genero
+@{
+    ViewBag.Title = "Adicionar";
+}
+
+@using (Html.BeginForm("Salvar", "Genero", FormMethod.Post, new { @class = "form-signin" }))
+{
+    <h1 class="h3 mb-3">Adicionar Genero</h1>
+
+    <div class="form-group">
+        @Html.TextBoxFor(g => g.Nome, new { @class = "form-control", placeholder = "Nome do Genero", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(g => g.Nome, "", new { @class = "validation-error" })
+    </div>
+
+    <div class="form-group">
+        @Html.CheckBoxFor(model => Model.Ativo, null)
+        @Html.Label("Ativo", new { @class = "form-check-label" })
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <button class="btn btn-sm btn-secondary btn-block" onclick="location.href='@Url.Action("Index" , "Genero")'; return false;">Cancelar</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-sm btn-primary btn-block" type="submit">Salvar</button>
+        </div>
+    </div>
+}

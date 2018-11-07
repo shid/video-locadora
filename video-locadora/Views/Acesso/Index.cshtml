@@ -1,0 +1,29 @@
+﻿@model video_locadora.Models.UsuarioLogin
+@{
+    ViewBag.Title = "Login";
+}
+
+@using (Html.BeginForm("Login", "Acesso", FormMethod.Post, new { @class = "form-signin" }))
+{
+    <h1 class="h3 mb-3">Acessar</h1>
+    <div class="form-group">
+        @Html.TextBoxFor(u => u.CPF, new { @class = "form-control", placeholder = "CPF", id = "CPF", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.CPF, "", new { @class = "validation-error" })
+    </div>
+    <div class="form-group">
+        @Html.PasswordFor(u => u.Senha, new { @class = "form-control", placeholder = "Senha", autocomplete = "off", required = "required" })
+        @Html.ValidationMessageFor(u => u.Senha, "", new { @class = "validation-error" })
+    </div>
+    <div class="form-group">
+        @Html.ActionLink("Cadastrar novo usuário", "Adicionar", "Usuario")
+    </div>
+    <div class="form-group text-center">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+    </div>
+}
+
+<script>
+    $("#CPF").keydown(function () {
+        $("#CPF").mask("999.999.999-99");
+    });
+</script>
